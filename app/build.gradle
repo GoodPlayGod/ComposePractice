@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.example.composepractice'
-    compileSdk 32
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.example.composepractice"
-        minSdk 32
-        targetSdk 32
+        minSdk 28
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 

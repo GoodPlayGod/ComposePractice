@@ -1,7 +1,6 @@
 package com.example.composepractice
 
 import android.os.Bundle
-import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -46,7 +45,7 @@ fun GreetingView() {
             modifier = Modifier,
             verticalArrangement = Arrangement.Center
         ) {
-            MainScreen("Moscow", LocalContext.current)
+            MainScreen(LocalContext.current)
         }
     }
 }

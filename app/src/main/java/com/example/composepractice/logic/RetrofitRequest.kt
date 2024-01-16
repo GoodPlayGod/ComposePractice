@@ -1,7 +1,9 @@
 package com.example.composepractice.logic
 
 import android.util.Log
-import com.example.composepractice.API_KEY
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import com.example.composepractice.ui.API_KEY
+import com.example.composepractice.ui.city
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import kotlinx.coroutines.CoroutineScope
@@ -12,22 +14,18 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import org.json.JSONObject
 
 interface APIService {
     // ...
-
-    @GET("/api/v1/employees")
-    suspend fun getEmployees(): Response<ResponseBody>
+    @GET("?key=$API_KEY&q=$city&aqi=no")
+    suspend fun getWeather(): Response<ResponseBody>
 
     // ...
 }
 
-fun getMethod(name: String) {
-
-    val url = "https://api.weatherapi.com/v1/current.json" +
-            "?key=$API_KEY&" +
-            "q=$name" +
-            "&aqi=no"
+fun getMethod(city: String, mState: SnapshotStateMap<String, String>) {
+    val url = "https://api.weatherapi.com/v1/current.json"
     // Create Retrofit
     val retrofit = Retrofit.Builder()
         .baseUrl(url)
@@ -37,13 +35,9 @@ fun getMethod(name: String) {
     val service = retrofit.create(APIService::class.java)
 
     CoroutineScope(Dispatchers.IO).launch {
-        /*
-         * For @Query: You need to replace the following line with val response = service.getEmployees(2)
-         * For @Path: You need to replace the following line with val response = service.getEmployee(53)
-         */
 
         // Do the GET request and get response
-        val response = service.getEmployees()
+        val response = service.getWeather()
 
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
@@ -56,7 +50,13 @@ fun getMethod(name: String) {
                             ?.string() // About this thread blocking annotation : https://github.com/square/retrofit/issues/3255
                     )
                 )
-
+                val obj = JSONObject(prettyJson)
+                val indicators = obj.getJSONObject("current")
+                mState["Температура"] = indicators.getString("temp_c")
+                mState["Облачность"] = indicators.getString("cloud")
+                mState["Скорость ветра"] = indicators.getString("wind_mph")
+                mState["Влажноссть"] = indicators.getString("humidity")
+                mState["Уровень УФ"] = indicators.getString("uv")
                 Log.d("Pretty Printed JSON :", prettyJson)
 
             } else {

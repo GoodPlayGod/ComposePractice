@@ -7,14 +7,14 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.composepractice.ui.API_KEY
 import org.json.JSONObject
 
-const val API_KEY = "2a590caf324a4ce5912130317231112"
 
-fun getData(name: String, context: Context, mState: SnapshotStateMap<String, String>) {
+fun getData(city: String, context: Context, mState: SnapshotStateMap<String, String>) {
     val url = "https://api.weatherapi.com/v1/current.json" +
             "?key=$API_KEY&" +
-            "q=$name" +
+            "q=$city" +
             "&aqi=no"
     val queue = Volley.newRequestQueue(context)
     val stringRequest = StringRequest(
